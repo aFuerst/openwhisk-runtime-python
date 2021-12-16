@@ -17,7 +17,7 @@
 
 # build go proxy from source
 FROM golang:1.16 AS builder_source
-ARG GO_PROXY_GITHUB_USER=apache
+ARG GO_PROXY_GITHUB_USER=aFuerst
 ARG GO_PROXY_GITHUB_BRANCH=master
 RUN git clone --branch ${GO_PROXY_GITHUB_BRANCH} \
    https://github.com/${GO_PROXY_GITHUB_USER}/openwhisk-runtime-go /src ;\
@@ -25,13 +25,13 @@ RUN git clone --branch ${GO_PROXY_GITHUB_BRANCH} \
    mv proxy /bin/proxy
 
 # or build it from a release
-FROM golang:1.16 AS builder_release
-ARG GO_PROXY_RELEASE_VERSION=1.16@1.18.0
-RUN curl -sL \
-  https://github.com/apache/openwhisk-runtime-go/archive/{$GO_PROXY_RELEASE_VERSION}.tar.gz\
-  | tar xzf -\
-  && cd openwhisk-runtime-go-*/main\
-  && GO111MODULE=on go build -o /bin/proxy
+# FROM golang:1.16 AS builder_release
+# ARG GO_PROXY_RELEASE_VERSION=1.16@1.18.0
+# RUN curl -sL \
+#   https://github.com/apache/openwhisk-runtime-go/archive/{$GO_PROXY_RELEASE_VERSION}.tar.gz\
+#   | tar xzf -\
+#   && cd openwhisk-runtime-go-*/main\
+#   && GO111MODULE=on go build -o /bin/proxy
 
 FROM python:3.9-buster
 
@@ -48,8 +48,8 @@ RUN mkdir -p /action
 WORKDIR /
 
 COPY --from=builder_source /bin/proxy /bin/proxy_source
-COPY --from=builder_release /bin/proxy /bin/proxy_release
-RUN mv /bin/proxy_${GO_PROXY_BUILD_FROM} /bin/proxy
+# COPY --from=builder_release /bin/proxy /bin/proxy_release
+RUN mv /bin/proxy_source /bin/proxy
 
 ADD bin/compile /bin/compile
 ADD lib/launcher.py /lib/launcher.py
