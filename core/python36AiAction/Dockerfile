@@ -54,6 +54,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
             libxext6 \
             libxrender-dev \
             coreutils \
+            ffmpeg \
+            libsm6 \
+            libxext6 \
             && rm -rf /var/lib/apt/lists/*
 
 # PyTorch

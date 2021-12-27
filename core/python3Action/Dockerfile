@@ -38,6 +38,8 @@ FROM python:3.7-buster
 # select the builder to use
 ARG GO_PROXY_BUILD_FROM=release
 
+# RUN apt-get -y install coreutils ffmpeg libsm6 libxext6
+
 # Install common modules for python
 COPY requirements_common.txt requirements_common.txt
 COPY requirements.txt requirements.txt
